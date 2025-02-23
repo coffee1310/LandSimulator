@@ -4,9 +4,10 @@ import com.example.landfx.Enum.Direction;
 import javafx.scene.image.Image;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public abstract class Animal {
-    public abstract void eat(Animal animal);
+    public abstract Animal eat(Animal animal);
 
     public abstract void eat(Plant plant);
 
@@ -21,6 +22,10 @@ public abstract class Animal {
     public abstract Image getImage();
 
     public abstract void setCoordinates(int x, int y);
+
+    public abstract void setDirection(Direction direction);
+
+    public abstract Map<Animal, Integer> getEatAnimalChance();
 
     public abstract int addX(int value);
 
@@ -50,6 +55,6 @@ public abstract class Animal {
 
     protected boolean eatPlants;
 
-    protected HashMap<Animal, Float> eatAnimalChances;
+    protected Map<Animal, Integer> eatAnimalChances;
 
 }

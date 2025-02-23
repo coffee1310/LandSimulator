@@ -22,6 +22,7 @@ public class Game {
     private static final int TACT_DURATION= 1000; // Длина такта в мс
     private static final int MIN_ANIMAL_COUNT = 3; // Минимальное количество животных при генерации
     private static final int MAX_ANIMAL_COUNT = 10; // Максимальное количество животных при генерации
+    private Thread thread;
 
     private GridPane Grid;
     private List<Animal> animals;
@@ -60,6 +61,7 @@ public class Game {
         }
 
         initAnimals();
+        updateTick();
     }
 
     private void initAnimals() throws FileNotFoundException {
@@ -87,6 +89,25 @@ public class Game {
                 animals.add(animal);
             }
         }
+    }
+
+    private void updateTick() {
+        thread = new Thread(() -> {
+            List<Thread> threads = new ArrayList<>();
+
+            for (var animal: animals) {
+                Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid));
+                threads.add(animalBehaviorThread);
+                animalBehaviorThread.start();
+                System.out.println(animal.getX());
+                try {
+                    animalBehaviorThread.wait(TACT_DURATION);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        thread.start();
     }
 
     public GridPane getGrid() {

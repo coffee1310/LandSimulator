@@ -4,6 +4,8 @@ import com.example.landfx.Enum.Direction;
 import com.example.landfx.Game;
 import javafx.scene.image.Image;
 
+import java.util.Map;
+
 public class Herbivore extends Animal {
     public Herbivore(int xPos, int yPos, Image image) {
         this.XPosition = xPos;
@@ -12,9 +14,10 @@ public class Herbivore extends Animal {
     }
 
     @Override
-    public void eat(Animal animal) {
+    public Animal eat(Animal animal) {
         if (this.satiety + animal.weight <= this.maxWeightForFullSatiety) this.satiety += animal.weight;
         else this.satiety = this.maxWeightForFullSatiety;
+        return this;
     }
 
     @Override
@@ -68,6 +71,16 @@ public class Herbivore extends Animal {
     public void setCoordinates(int x, int y) {
         this.XPosition = x;
         this.YPosition = y;
+    }
+
+    @Override
+    public void setDirection(Direction direction) {
+        this.direction = direction;
+    }
+
+    @Override
+    public Map<Animal, Integer> getEatAnimalChance() {
+        return this.eatAnimalChances;
     }
 
     @Override
