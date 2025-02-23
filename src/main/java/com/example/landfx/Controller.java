@@ -6,6 +6,8 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
+import java.io.FileNotFoundException;
+
 public class Controller {
     @FXML
     private Label welcomeText;
@@ -30,7 +32,13 @@ public class Controller {
 
     public void initialize() {
         this.game = Game.getInstance();
-        this.game.setGrid(this.Grid);
+
+        try {
+            this.game.setGrid(this.Grid);
+        } catch (FileNotFoundException e) {
+            System.out.println("[ОШИБКА!] Не найдены изображения!");
+        }
+
 
         this.Grid.setGridLinesVisible(true);
     }

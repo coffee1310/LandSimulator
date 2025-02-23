@@ -1,9 +1,11 @@
 package com.example.landfx.Enteties.AbstractEnteties;
 
 import com.example.landfx.Enum.Direction;
+import javafx.scene.image.Image;
+
 import java.util.HashMap;
 
-abstract class Animal {
+public abstract class Animal {
     public abstract void eat(Animal animal);
 
     public abstract void eat(Plant plant);
@@ -15,6 +17,20 @@ abstract class Animal {
     public abstract Animal reproduction(Animal animal);
 
     public abstract Animal kill();
+
+    public abstract Image getImage();
+
+    public abstract void setCoordinates(int x, int y);
+
+    public abstract int addX(int value);
+
+    public abstract int addY(int value);
+
+    public abstract int getX();
+
+    public abstract int getY();
+
+    protected Image image;
 
     protected int XPosition;
 
