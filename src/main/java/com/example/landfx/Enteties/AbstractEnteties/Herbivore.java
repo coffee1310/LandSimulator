@@ -28,22 +28,19 @@ public class Herbivore extends Animal {
     }
 
     @Override
-    public void changeMove(Direction direction) {this.direction = direction;}
-
-    @Override
-    public void move() {
+    public void move(int steps) {
         switch (this.direction) {
             case UP:
-                if (this.YPosition > 0) this.YPosition -= 1;
+                if (this.YPosition > 0) this.YPosition -= steps;
                 break;
             case DOWN:
-                if (this.YPosition < Game.getInstance().getHeight()) this.YPosition += 1;
+                if (this.YPosition < Game.getInstance().getHeight()) this.YPosition += steps;
                 break;
             case LEFT:
-                if (this.XPosition > 0) this.XPosition -= 1;
+                if (this.XPosition > 0) this.XPosition -= steps;
                 break;
             case RIGHT:
-                if (this.XPosition < Game.getInstance().getWidth()) this.XPosition += 1;
+                if (this.XPosition < Game.getInstance().getWidth()) this.XPosition += steps;
                 break;
         }
     }
@@ -81,6 +78,11 @@ public class Herbivore extends Animal {
     @Override
     public Map<Animal, Integer> getEatAnimalChance() {
         return this.eatAnimalChances;
+    }
+
+    @Override
+    public int getMaxMove() {
+        return this.maxMove;
     }
 
     @Override

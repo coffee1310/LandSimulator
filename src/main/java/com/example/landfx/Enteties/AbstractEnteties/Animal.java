@@ -11,9 +11,7 @@ public abstract class Animal {
 
     public abstract void eat(Plant plant);
 
-    public abstract void changeMove(Direction direction);
-
-    public abstract void move();
+    public abstract void move(int steps);
 
     public abstract Animal reproduction(Animal animal);
 
@@ -26,6 +24,8 @@ public abstract class Animal {
     public abstract void setDirection(Direction direction);
 
     public abstract Map<Animal, Integer> getEatAnimalChance();
+
+    public abstract int getMaxMove();
 
     public abstract int addX(int value);
 

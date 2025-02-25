@@ -26,24 +26,23 @@ public class Predator extends Animal {
     public void eat(Plant plant) {}
 
     @Override
-    public void changeMove(Direction direction) {
-        this.direction = direction;
-    }
-
-    @Override
-    public void move() {
+    public void move(int steps) {
         switch (this.direction) {
             case UP:
-                if (this.YPosition > 0) this.YPosition -= 1;
+                if (this.YPosition > 0) this.YPosition -= steps;
+                else this.YPosition = 0;
                 break;
             case DOWN:
-                if (this.YPosition < Game.getInstance().getHeight()) this.YPosition += 1;
+                if (this.YPosition < Game.getInstance().getHeight()) this.YPosition += steps;
+                else this.YPosition = Game.getInstance().getHeight() - 1;
                 break;
             case LEFT:
-                if (this.XPosition > 0) this.XPosition -= 1;
+                if (this.XPosition > 0) this.XPosition -= steps;
+                else this.XPosition = 0;
                 break;
             case RIGHT:
-                if (this.XPosition < Game.getInstance().getWidth()) this.XPosition += 1;
+                if (this.XPosition < Game.getInstance().getWidth()) this.XPosition += steps;
+                else this.XPosition = Game.getInstance().getWidth() - 1;
                 break;
         }
     }
@@ -82,6 +81,11 @@ public class Predator extends Animal {
     @Override
     public Map<Animal, Integer> getEatAnimalChance() {
         return this.eatAnimalChances;
+    }
+
+    @Override
+    public int getMaxMove() {
+        return this.maxMove;
     }
 
     @Override

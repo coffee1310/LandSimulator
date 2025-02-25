@@ -19,10 +19,15 @@ import java.util.Random;
 public class Game {
     private static final int WIDTH = 25; // Ширина острова (в клетках)
     private static final int HEIGHT = 25; // Длина острова (в клетках)
-    private static final int TACT_DURATION= 1000; // Длина такта в мс
+    public static final int TACT_DURATION= 1000; // Длина такта в мс
     private static final int MIN_ANIMAL_COUNT = 3; // Минимальное количество животных при генерации
     private static final int MAX_ANIMAL_COUNT = 10; // Максимальное количество животных при генерации
-    private Thread thread;
+    
+    private Thread AnimalThread;
+    private Thread GridThread;
+    private List<Thread> AnimalThreads = new LinkedList<>();
+
+    private List<Animal> animal_types;
 
     private GridPane Grid;
     private List<Animal> animals;
@@ -66,7 +71,7 @@ public class Game {
 
     private void initAnimals() throws FileNotFoundException {
         animals = new ArrayList<>();
-        List<Animal> animal_types = new ArrayList<>();
+        animal_types = new ArrayList<>();
 
         animal_types.add(
             new Wolf(
@@ -89,25 +94,38 @@ public class Game {
                 animals.add(animal);
             }
         }
+
+        AnimalThread = new Thread(() -> {
+            for (var animal: animal_types) {
+                Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid, this.animal_types, this.AnimalThreads));
+                this.AnimalThreads.add(animalBehaviorThread);
+            }
+        });
+        AnimalThread.start();
+        AnimalThread.interrupt();
     }
 
     private void updateTick() {
-        thread = new Thread(() -> {
-            List<Thread> threads = new ArrayList<>();
-
-            for (var animal: animals) {
-                Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid));
-                threads.add(animalBehaviorThread);
-                animalBehaviorThread.start();
-                System.out.println(animal.getX());
-                try {
-                    animalBehaviorThread.wait(TACT_DURATION);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+        AnimalThread = new Thread(() -> {
+            for (var th: AnimalThreads) {
+                th.start();
+            }
+            while (true) {
+                for (var th: AnimalThreads) {
+                    th.run();
                 }
             }
         });
-        thread.start();
+        
+        GridThread = new Thread(() -> {
+           for (var animal: animals) {
+               int x = animal.getX();
+               int y = animal.getY();
+
+           }
+        });
+
+        AnimalThread.start();
     }
 
     public GridPane getGrid() {

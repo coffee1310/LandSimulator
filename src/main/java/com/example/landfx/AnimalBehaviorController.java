@@ -7,16 +7,22 @@ import javafx.scene.layout.GridPane;
 import java.util.List;
 import java.util.Random;
 
+import static com.example.landfx.Game.TACT_DURATION;
+
 public class AnimalBehaviorController implements Runnable {
     private Animal animal;
     private List<Animal> animals;
     private GridPane Grid;
+    private List<Thread> threads;
+
     private int x;
     private int y;
 
-    public AnimalBehaviorController(Animal animal, GridPane Grid) {
+    public AnimalBehaviorController(Animal animal, GridPane Grid, List<Animal> animals, List<Thread> threads) {
         this.animal = animal;
         this.Grid = Grid;
+        this.animals = animals;
+        this.threads = threads;
     }
 
     private void eat() {
@@ -51,7 +57,7 @@ public class AnimalBehaviorController implements Runnable {
                 break;
         }
 
-        move(animal);
+        animal.move(rand.nextInt(0, animal.getMaxMove() + 1));
     }
 
     private void reproduction() {
@@ -64,13 +70,21 @@ public class AnimalBehaviorController implements Runnable {
             Animal new_animal = animal.reproduction(another_animal);
             animals.add(new_animal);
             move(new_animal);
+            Thread thread = new Thread(new AnimalBehaviorController(new_animal, this.Grid, this.animals, this.threads));
+            threads.add(thread);
         }
     }
 
     @Override
     public void run() {
-        animal.move();
+        System.out.println(animal.getX() + " " + animal.getY());
         eat();
         reproduction();
+        move(animal);
+        try {
+            Thread.sleep(TACT_DURATION);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
