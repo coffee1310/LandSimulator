@@ -1,12 +1,29 @@
 package com.example.landfx.Enteties.AbstractEnteties;
 
 import com.example.landfx.Enum.Direction;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Animal {
+    public Animal(Animal other) {
+        this.XPosition = other.XPosition;
+        this.YPosition = other.YPosition;
+        this.image = other.image;
+        this.maxMove = other.maxMove;
+        this.eatAnimalChances = other.eatAnimalChances;
+    }
+
+    public Animal(int XPosition, int YPosition, Image image, int maxMove) {
+        this.XPosition = XPosition;
+        this.YPosition = YPosition;
+        this.image = image;
+        this.maxMove = maxMove;
+        this.eatAnimalChances = new HashMap<>();
+    }
+
     public abstract Animal eat(Animal animal);
 
     public abstract void eat(Plant plant);
@@ -16,6 +33,8 @@ public abstract class Animal {
     public abstract Animal reproduction(Animal animal);
 
     public abstract Animal kill();
+
+    public abstract Animal copy();
 
     public abstract Image getImage();
 

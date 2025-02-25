@@ -2,15 +2,18 @@ package com.example.landfx.Enteties.AbstractEnteties;
 
 import com.example.landfx.Enum.Direction;
 import com.example.landfx.Game;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 
 import java.util.Map;
 
 public class Herbivore extends Animal {
-    public Herbivore(int xPos, int yPos, Image image) {
-        this.XPosition = xPos;
-        this.YPosition = yPos;
-        this.image = image;
+    public Herbivore(int xPos, int yPos, Image image, int maxMove) {
+        super(xPos, yPos, image, maxMove);
+    }
+
+    public Herbivore(Herbivore other) {
+        super(other);
     }
 
     @Override
@@ -48,7 +51,7 @@ public class Herbivore extends Animal {
     @Override
     public Animal reproduction(Animal animal) {
         if (!(animal instanceof Predator)) return null;
-        return new Herbivore(this.XPosition, this.YPosition, this.image);
+        return new Herbivore(this.XPosition, this.YPosition, this.image, this.maxMove);
     }
 
     @Override
@@ -57,6 +60,11 @@ public class Herbivore extends Animal {
 
         }
         return null;
+    }
+
+    @Override
+    public Animal copy() {
+        return new Herbivore(this);
     }
 
     @Override

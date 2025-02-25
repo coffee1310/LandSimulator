@@ -2,9 +2,12 @@ package com.example.landfx;
 
 import com.example.landfx.Enteties.AbstractEnteties.Animal;
 import com.example.landfx.Enteties.Enteties.Wolf;
+import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -90,14 +93,16 @@ public class Game {
             animal_types_count = rand.nextInt(MIN_ANIMAL_COUNT, MAX_ANIMAL_COUNT);
 
             for (int i = 0; i < animal_types_count; i++) {
+                Animal newAnimal = animal.copy();
                 animal.setCoordinates(rand.nextInt(WIDTH), rand.nextInt(HEIGHT));
-                animals.add(animal);
+                newAnimal.setCoordinates(rand.nextInt(WIDTH), rand.nextInt(HEIGHT));
+                animals.add(newAnimal);
             }
         }
 
         AnimalThread = new Thread(() -> {
-            for (var animal: animal_types) {
-                Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid, this.animal_types, this.AnimalThreads));
+            for (var animal: animals) {
+                Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid, this.animals, this.AnimalThreads));
                 this.AnimalThreads.add(animalBehaviorThread);
             }
         });
@@ -106,25 +111,45 @@ public class Game {
     }
 
     private void updateTick() {
-        AnimalThread = new Thread(() -> {
-            for (var th: AnimalThreads) {
-                th.start();
-            }
-            while (true) {
-                for (var th: AnimalThreads) {
-                    th.run();
+        GridThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    Thread.sleep(100);
+
+                    Platform.runLater(() -> {
+                        this.Grid.getChildren().clear();
+                        List<Animal> newAnimals = animals;
+                        for (var animal : newAnimals) {
+                            int x = animal.getX();
+                            int y = animal.getY();
+                            this.Grid.add(new ImageView(animal.getImage()), x, y);
+                        }
+                        this.Grid.setGridLinesVisible(true);
+                    });
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
                 }
             }
         });
-        
-        GridThread = new Thread(() -> {
-           for (var animal: animals) {
-               int x = animal.getX();
-               int y = animal.getY();
 
-           }
+        AnimalThread = new Thread(() -> {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    List<Thread> animalThreads = AnimalThreads;
+                    for (var th : animalThreads) {
+                        th.run();
+                    }
+
+                    Thread.sleep(TACT_DURATION);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
         });
 
+        GridThread.start();
         AnimalThread.start();
     }
 

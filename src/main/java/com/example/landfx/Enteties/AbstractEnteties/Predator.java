@@ -2,16 +2,19 @@ package com.example.landfx.Enteties.AbstractEnteties;
 
 import com.example.landfx.Enum.Direction;
 import com.example.landfx.Game;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 
 import java.util.Map;
 
 public class Predator extends Animal {
-    public Predator(int xPos, int yPos, Image image) {
-        this.XPosition = xPos;
-        this.YPosition = yPos;
+    public Predator(int xPos, int yPos, Image image, int maxMove) {
+        super(xPos, yPos, image, maxMove);
         this.eatPlants = false;
-        this.image = image;
+    }
+
+    public Predator(Predator other) {
+        super(other);
     }
 
     @Override
@@ -29,20 +32,16 @@ public class Predator extends Animal {
     public void move(int steps) {
         switch (this.direction) {
             case UP:
-                if (this.YPosition > 0) this.YPosition -= steps;
-                else this.YPosition = 0;
+                this.YPosition = Math.max(0, this.YPosition - steps);
                 break;
             case DOWN:
-                if (this.YPosition < Game.getInstance().getHeight()) this.YPosition += steps;
-                else this.YPosition = Game.getInstance().getHeight() - 1;
+                this.YPosition = Math.min(Game.getInstance().getHeight() - 1, this.YPosition + steps);
                 break;
             case LEFT:
-                if (this.XPosition > 0) this.XPosition -= steps;
-                else this.XPosition = 0;
+                this.XPosition = Math.max(0, this.XPosition - steps);
                 break;
             case RIGHT:
-                if (this.XPosition < Game.getInstance().getWidth()) this.XPosition += steps;
-                else this.XPosition = Game.getInstance().getWidth() - 1;
+                this.XPosition = Math.min(Game.getInstance().getWidth() - 1, this.XPosition + steps);
                 break;
         }
     }
@@ -60,6 +59,11 @@ public class Predator extends Animal {
 
         }
         return null;
+    }
+
+    @Override
+    public Animal copy() {
+        return new Predator(this);
     }
 
     @Override
