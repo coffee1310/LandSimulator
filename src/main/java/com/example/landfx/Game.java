@@ -25,7 +25,19 @@ public class Game {
     public static final int TACT_DURATION= 1000; // Длина такта в мс
     private static final int MIN_ANIMAL_COUNT = 3; // Минимальное количество животных при генерации
     private static final int MAX_ANIMAL_COUNT = 10; // Максимальное количество животных при генерации
-    
+
+    private static Image GROUND_IMAGE;
+
+    static {
+        try {
+            GROUND_IMAGE = new Image(
+                    new FileInputStream(HelloApplication.class.getResource("image/ground.jpg").getPath())
+            );
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private Thread AnimalThread;
     private Thread GridThread;
     private List<Thread> AnimalThreads = new LinkedList<>();
@@ -118,7 +130,9 @@ public class Game {
 
                     Platform.runLater(() -> {
                         this.Grid.getChildren().clear();
-                        List<Animal> newAnimals = animals;
+
+
+                        List<Animal> newAnimals = new ArrayList<>(animals);
                         for (var animal : newAnimals) {
                             int x = animal.getX();
                             int y = animal.getY();
@@ -136,7 +150,7 @@ public class Game {
         AnimalThread = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    List<Thread> animalThreads = AnimalThreads;
+                    List<Thread> animalThreads = new ArrayList<>(AnimalThreads);
                     for (var th : animalThreads) {
                         th.run();
                     }

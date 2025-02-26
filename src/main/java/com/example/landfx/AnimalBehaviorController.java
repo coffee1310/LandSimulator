@@ -80,18 +80,15 @@ public class AnimalBehaviorController implements Runnable {
             if (another_animal.getClass() != this.animal.getClass()) continue;
             if (animal.getEatAnimalChance().containsKey(another_animal)) continue;
 
-            Animal new_animal = animal.reproduction(another_animal);
-            animals.add(new_animal);
-            move(new_animal);
-            Thread thread = new Thread(new AnimalBehaviorController(new_animal, this.Grid, this.animals, this.threads));
-            threads.add(thread);
+            addAnimal(another_animal);
+            break;
         }
     }
 
     @Override
     public void run() {
         eat();
-        reproduction();
+        //reproduction();
         move(animal);
     }
 }
