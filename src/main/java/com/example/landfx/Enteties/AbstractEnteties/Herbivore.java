@@ -46,6 +46,9 @@ public class Herbivore extends Animal {
                 if (this.XPosition < Game.getInstance().getWidth()) this.XPosition += steps;
                 break;
         }
+
+        this.stepBeforeToBeAdult++;
+        if (this.stepBeforeToBeAdult >= 10) this.isChild = true;
     }
 
     @Override
@@ -63,14 +66,10 @@ public class Herbivore extends Animal {
     }
 
     @Override
-    public Animal copy() {
-        return new Herbivore(this);
-    }
+    public Animal copy() {return new Herbivore(this);}
 
     @Override
-    public Image getImage() {
-        return this.image;
-    }
+    public Image getImage() {return this.image;}
 
     @Override
     public void setCoordinates(int x, int y) {
@@ -79,19 +78,13 @@ public class Herbivore extends Animal {
     }
 
     @Override
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
+    public void setDirection(Direction direction) {this.direction = direction;}
 
     @Override
-    public Map<Animal, Integer> getEatAnimalChance() {
-        return this.eatAnimalChances;
-    }
+    public Map<Animal, Integer> getEatAnimalChance() {return this.eatAnimalChances;}
 
     @Override
-    public int getMaxMove() {
-        return this.maxMove;
-    }
+    public int getMaxMove() {return this.maxMove;}
 
     @Override
     public int addX(int value) {
@@ -106,12 +99,11 @@ public class Herbivore extends Animal {
     }
 
     @Override
-    public int getX() {
-        return this.XPosition;
-    }
+    public int getX() {return this.XPosition;}
 
     @Override
-    public int getY() {
-        return this.YPosition;
-    }
+    public int getY() {return this.YPosition;}
+
+    @Override
+    public boolean getIsChild() {return this.isChild;}
 }

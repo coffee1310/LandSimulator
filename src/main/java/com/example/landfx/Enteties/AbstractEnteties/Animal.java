@@ -54,6 +54,8 @@ public abstract class Animal {
 
     public abstract int getY();
 
+    public abstract boolean getIsChild();
+
     protected Image image;
 
     protected int XPosition;
@@ -73,6 +75,10 @@ public abstract class Animal {
     protected float weight;
 
     protected boolean eatPlants;
+
+    protected boolean isChild = false;
+
+    protected int stepBeforeToBeAdult = 0;
 
     protected Map<Animal, Integer> eatAnimalChances;
 

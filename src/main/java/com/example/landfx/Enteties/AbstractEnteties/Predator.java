@@ -44,6 +44,9 @@ public class Predator extends Animal {
                 this.XPosition = Math.min(Game.getInstance().getWidth() - 1, this.XPosition + steps);
                 break;
         }
+
+        this.stepBeforeToBeAdult++;
+        if (this.stepBeforeToBeAdult >= 10) this.isChild = true;
     }
 
     @Override
@@ -113,4 +116,7 @@ public class Predator extends Animal {
     public int getY() {
         return this.YPosition;
     }
+
+    @Override
+    public boolean getIsChild() {return this.isChild;}
 }

@@ -14,14 +14,11 @@ import javafx.scene.layout.RowConstraints;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Game {
-    private static final int WIDTH = 25; // Ширина острова (в клетках)
-    private static final int HEIGHT = 25; // Длина острова (в клетках)
+    private static final int WIDTH = 20; // Ширина острова (в клетках)
+    private static final int HEIGHT = 20; // Длина острова (в клетках)
     public static final int TACT_DURATION= 1000; // Длина такта в мс
     private static final int MIN_ANIMAL_COUNT = 3; // Минимальное количество животных при генерации
     private static final int MAX_ANIMAL_COUNT = 10; // Максимальное количество животных при генерации
@@ -43,6 +40,7 @@ public class Game {
     private List<Thread> AnimalThreads = new LinkedList<>();
 
     private List<Animal> animal_types;
+    private Map<Animal, ImageView> animalViews = new HashMap<>();
 
     private GridPane Grid;
     private List<Animal> animals;
@@ -70,14 +68,24 @@ public class Game {
         this.Grid = Grid;
         for (int i = 0; i < WIDTH; i++) {
             ColumnConstraints columnConstraints = new ColumnConstraints();
-            columnConstraints.setPrefWidth(100);
+            columnConstraints.setMinWidth(48);
+            columnConstraints.setMaxWidth(48);
+            columnConstraints.setPrefWidth(48);
             this.Grid.getColumnConstraints().add(columnConstraints);
         }
 
         for (int i = 0; i < HEIGHT; i++) {
             RowConstraints rowConstraints = new RowConstraints();
-            rowConstraints.setPrefHeight(100);
+            rowConstraints.setPrefHeight(48);
+            rowConstraints.setMinHeight(48);
+            rowConstraints.setMaxHeight(48);
             this.Grid.getRowConstraints().add(rowConstraints);
+        }
+
+        for (int i = 0; i < WIDTH; i++) {
+            for (int j = 0; j < HEIGHT; j++) {
+                this.Grid.add(new ImageView(GROUND_IMAGE), i, j);
+            }
         }
 
         initAnimals();
@@ -114,7 +122,7 @@ public class Game {
 
         AnimalThread = new Thread(() -> {
             for (var animal: animals) {
-                Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid, this.animals, this.AnimalThreads));
+                Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid, this.animals, this.AnimalThreads, this.animalViews));
                 this.AnimalThreads.add(animalBehaviorThread);
             }
         });
@@ -129,15 +137,25 @@ public class Game {
                     Thread.sleep(100);
 
                     Platform.runLater(() -> {
-                        this.Grid.getChildren().clear();
-
-
                         List<Animal> newAnimals = new ArrayList<>(animals);
+
+                        animalViews.keySet().retainAll(newAnimals);
+
                         for (var animal : newAnimals) {
-                            int x = animal.getX();
-                            int y = animal.getY();
-                            this.Grid.add(new ImageView(animal.getImage()), x, y);
+                            ImageView imageView = animalViews.get(animal);
+                            if (imageView == null) {
+                                imageView = new ImageView(animal.getImage());
+                                animalViews.put(animal, imageView);
+                                this.Grid.add(imageView, animal.getX(), animal.getY());
+                            } else {
+                                if (GridPane.getColumnIndex(imageView) != animal.getX() ||
+                                        GridPane.getRowIndex(imageView) != animal.getY()) {
+                                    this.Grid.getChildren().remove(imageView);
+                                    this.Grid.add(imageView, animal.getX(), animal.getY());
+                                }
+                            }
                         }
+
                         this.Grid.setGridLinesVisible(true);
                     });
                 } catch (InterruptedException e) {
