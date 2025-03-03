@@ -115,7 +115,7 @@ public class Game {
             for (int i = 0; i < animal_types_count; i++) {
                 Animal newAnimal = animal.copy();
                 animal.setCoordinates(rand.nextInt(WIDTH), rand.nextInt(HEIGHT));
-                newAnimal.setCoordinates(rand.nextInt(WIDTH), rand.nextInt(HEIGHT));
+                newAnimal.setCoordinates(rand.nextInt(WIDTH), rand.nextInt(HEIGHT) );
                 animals.add(newAnimal);
             }
         }
@@ -126,6 +126,7 @@ public class Game {
                 this.AnimalThreads.add(animalBehaviorThread);
             }
         });
+
         AnimalThread.start();
         AnimalThread.interrupt();
     }
@@ -154,6 +155,7 @@ public class Game {
                                     this.Grid.add(imageView, animal.getX(), animal.getY());
                                 }
                             }
+                            System.out.println(animal);
                         }
 
                         this.Grid.setGridLinesVisible(true);

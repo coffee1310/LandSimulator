@@ -32,6 +32,7 @@ public class AnimalBehaviorController implements Runnable {
     }
 
     private synchronized void addAnimal(Animal animal) {
+        animal.setIsChild(true);
         animals.add(animal);
         Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid, this.animals, this.threads, this.animalViews));
         this.threads.add(animalBehaviorThread);
@@ -85,21 +86,22 @@ public class AnimalBehaviorController implements Runnable {
 
     private void reproduction() {
         for (var another_animal : animals) {
-            if (!another_animal.getIsChild()) continue;
+            if (another_animal.getIsChild()) continue;
             if (another_animal == animal) continue;
             if (another_animal.getX() != animal.getX() || another_animal.getY() != animal.getY()) continue;
             if (another_animal.getClass() != this.animal.getClass()) continue;
             if (animal.getEatAnimalChance().containsKey(another_animal)) continue;
-
-            addAnimal(another_animal);
+            if (animal.getSatiety() != animal.getMaxSatiety()
+                    || another_animal.getSatiety() != another_animal.getMaxSatiety()) continue;
+            animal.setSatiety(0);
+            another_animal.setSatiety(0);
+            addAnimal(animal.copy());
             break;
         }
     }
 
     @Override
     public void run() {
-        System.out.println("Кол-во потоков: " + threads.size());
-        System.out.println("Кол-во живот: " + animals.size());
         eat();
         reproduction();
         move(animal);

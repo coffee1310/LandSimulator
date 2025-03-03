@@ -5,6 +5,6 @@ import javafx.scene.image.Image;
 
 public class Wolf extends Predator {
     public Wolf(int xPos, int yPos, Image image) {
-        super(xPos, yPos, image, 3);
+        super(xPos, yPos, image, 3, 10, 10);
     }
 }

@@ -8,8 +8,8 @@ import javafx.scene.image.Image;
 import java.util.Map;
 
 public class Herbivore extends Animal {
-    public Herbivore(int xPos, int yPos, Image image, int maxMove) {
-        super(xPos, yPos, image, maxMove);
+    public Herbivore(int xPos, int yPos, Image image, int maxMove,  float satiety, float maxSatiety) {
+        super(xPos, yPos, image, maxMove, satiety, maxSatiety);
     }
 
     public Herbivore(Herbivore other) {
@@ -54,7 +54,7 @@ public class Herbivore extends Animal {
     @Override
     public Animal reproduction(Animal animal) {
         if (!(animal instanceof Predator)) return null;
-        return new Herbivore(this.XPosition, this.YPosition, this.image, this.maxMove);
+        return new Herbivore(this.XPosition, this.YPosition, this.image, this.maxMove, this.satiety, this.maxWeightForFullSatiety);
     }
 
     @Override
@@ -106,4 +106,29 @@ public class Herbivore extends Animal {
 
     @Override
     public boolean getIsChild() {return this.isChild;}
+
+    @Override
+    public void setIsChild(boolean value) {
+        this.isChild = value;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    @Override
+    public float getSatiety() {
+        return this.satiety;
+    }
+
+    @Override
+    public void setSatiety(float value) {
+        this.satiety = value;
+    }
+
+    @Override
+    public float getMaxSatiety() {
+        return this.maxWeightForFullSatiety;
+    }
 }

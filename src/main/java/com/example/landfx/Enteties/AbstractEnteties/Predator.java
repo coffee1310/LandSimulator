@@ -8,8 +8,8 @@ import javafx.scene.image.Image;
 import java.util.Map;
 
 public class Predator extends Animal {
-    public Predator(int xPos, int yPos, Image image, int maxMove) {
-        super(xPos, yPos, image, maxMove);
+    public Predator(int xPos, int yPos, Image image, int maxMove, int satiety, int maxSatiety) {
+        super(xPos, yPos, image, maxMove, satiety, maxSatiety);
         this.eatPlants = false;
     }
 
@@ -46,7 +46,7 @@ public class Predator extends Animal {
         }
 
         this.stepBeforeToBeAdult++;
-        if (this.stepBeforeToBeAdult >= 10) this.isChild = true;
+        if (this.stepBeforeToBeAdult >= 10) this.isChild = false;
     }
 
     @Override
@@ -119,4 +119,24 @@ public class Predator extends Animal {
 
     @Override
     public boolean getIsChild() {return this.isChild;}
+
+    @Override
+    public void setIsChild(boolean value) {
+        this.isChild = value;
+    }
+
+    @Override
+    public float getSatiety() {
+        return this.satiety;
+    }
+
+    @Override
+    public void setSatiety(float value) {
+        this.satiety = value;
+    }
+
+    @Override
+    public float getMaxSatiety() {
+        return this.maxWeightForFullSatiety;
+    }
 }
