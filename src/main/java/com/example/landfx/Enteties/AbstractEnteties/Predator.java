@@ -8,8 +8,16 @@ import javafx.scene.image.Image;
 import java.util.Map;
 
 public class Predator extends Animal {
-    public Predator(int xPos, int yPos, Image image, int maxMove, int satiety, int maxSatiety) {
-        super(xPos, yPos, image, maxMove, satiety, maxSatiety);
+    public Predator(int xPos,
+                    int yPos,
+                    Image image,
+                    int maxMove,
+                    int satiety,
+                    int maxSatiety,
+                    Map<String, Integer> eatAnimalChances,
+                    String name,
+                    float weight) {
+        super(xPos, yPos, image, maxMove, satiety, maxSatiety, eatAnimalChances, name, weight);
         this.eatPlants = false;
     }
 
@@ -19,7 +27,12 @@ public class Predator extends Animal {
 
     @Override
     public Animal eat(Animal animal) {
-        if (this.satiety + animal.weight <= this.maxWeightForFullSatiety) this.satiety += animal.weight;
+        if (this == animal) return null;
+        if (this.XPosition != animal.getX() || this.YPosition != animal.getY()) return null;
+        if (animal.getTitle().equals(this.name)) return null;
+        if (!this.eatAnimalChances.containsKey(animal.getTitle())) return null;
+
+        if (this.satiety + animal.getWeight() <= this.maxWeightForFullSatiety) this.satiety += animal.getWeight();
         else this.satiety = this.maxWeightForFullSatiety;
 
         return this;
@@ -50,10 +63,18 @@ public class Predator extends Animal {
     }
 
     @Override
-    public Animal reproduction(Animal animal) {
-        if (!(animal instanceof Predator)) return null;
-
-        return animal;
+    public Animal reproduction(Animal another_animal) {
+        if (!another_animal.getTitle().equals(this.name)) return null;
+        if (another_animal.getIsChild()) return null;
+        if (another_animal == this) return null;
+        if (another_animal.getX() != this.getX() || another_animal.getY() != this.getY()) return null;
+        if (another_animal.getClass() != this.getClass()) return null;
+        if (this.getEatAnimalChance().containsKey(another_animal)) return null;
+        if (this.getSatiety() != this.getMaxSatiety()
+                || another_animal.getSatiety() != another_animal.getMaxSatiety()) return null;
+        this.setSatiety(0);
+        another_animal.setSatiety(0);
+        return another_animal;
     }
 
     @Override
@@ -86,7 +107,7 @@ public class Predator extends Animal {
     }
 
     @Override
-    public Map<Animal, Integer> getEatAnimalChance() {
+    public Map<String, Integer> getEatAnimalChance() {
         return this.eatAnimalChances;
     }
 
@@ -138,5 +159,15 @@ public class Predator extends Animal {
     @Override
     public float getMaxSatiety() {
         return this.maxWeightForFullSatiety;
+    }
+
+    @Override
+    public String getTitle() {
+        return this.name;
+    }
+
+    @Override
+    public float getWeight() {
+        return this.weight;
     }
 }

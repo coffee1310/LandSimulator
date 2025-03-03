@@ -17,9 +17,19 @@ public abstract class Animal {
         this.eatAnimalChances = other.eatAnimalChances;
         this.satiety = other.satiety;
         this.maxWeightForFullSatiety = other.maxWeightForFullSatiety;
+        this.name = other.name;
+        this.weight = other.weight;
     }
 
-    public Animal(int XPosition, int YPosition, Image image, int maxMove, float satiety, float maxSatiety) {
+    public Animal(int XPosition,
+                  int YPosition,
+                  Image image,
+                  int maxMove,
+                  float satiety,
+                  float maxSatiety,
+                  Map<String, Integer> eatAnimalChances,
+                  String name,
+                  float weight) {
         this.id = Animal.max_id++;
         this.XPosition = XPosition;
         this.YPosition = YPosition;
@@ -27,12 +37,16 @@ public abstract class Animal {
         this.maxMove = maxMove;
         this.satiety = satiety;
         this.maxWeightForFullSatiety = maxSatiety;
-        this.eatAnimalChances = new HashMap<>();
+        this.eatAnimalChances = eatAnimalChances;
+        this.name = name;
+        this.weight = weight;
     }
 
     protected static int max_id = 0;
 
     protected int id = 0;
+
+    protected String name;
 
     public abstract Animal eat(Animal animal);
 
@@ -52,7 +66,7 @@ public abstract class Animal {
 
     public abstract void setDirection(Direction direction);
 
-    public abstract Map<Animal, Integer> getEatAnimalChance();
+    public abstract Map<String, Integer> getEatAnimalChance();
 
     public abstract int getMaxMove();
 
@@ -73,6 +87,10 @@ public abstract class Animal {
     public abstract void setSatiety(float value);
 
     public abstract float getMaxSatiety();
+
+    public abstract String getTitle();
+
+    public abstract float getWeight();
 
     protected Image image;
 
@@ -96,12 +114,23 @@ public abstract class Animal {
 
     protected boolean isChild = true;
 
+    protected boolean isAlive = true;
+
     protected int stepBeforeToBeAdult = 0;
 
-    protected Map<Animal, Integer> eatAnimalChances;
+    protected Map<String, Integer> eatAnimalChances;
 
     @Override
     public String toString() {
         return this.id+ " (" + this.getX() + ", " + this.getY() + ")";
+    }
+
+
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
     }
 }

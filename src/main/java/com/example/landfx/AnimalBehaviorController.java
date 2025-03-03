@@ -45,16 +45,25 @@ public class AnimalBehaviorController implements Runnable {
         });
     }
 
+    private synchronized void removeAnimal(Animal animal) {
+        animals.remove(animal);
+        animalViews.remove(animal);
+    }
+
     private void eat() {
         for (var another_animal : animals) {
             if (another_animal == animal) continue;
-            if (another_animal.getX() != x || another_animal.getY() != y) continue;
-            if (another_animal.getClass() == this.animal.getClass()) continue;
-            if (!animal.getEatAnimalChance().containsKey(another_animal)) continue;
+            if (another_animal.getX() != animal.getX() || another_animal.getY() != animal.getY()) continue;
+            if (another_animal.getTitle().equals(this.animal.getTitle())) continue;
+            if (!animal.getEatAnimalChance().containsKey(another_animal.getTitle())) continue;
 
             Random rand = new Random();
-            int chance = animal.getEatAnimalChance().get(another_animal);
+            int chance = animal.getEatAnimalChance().get(another_animal.getTitle());
             animal = rand.nextInt(1, chance + 1) < chance + 1? animal.eat(another_animal) : animal;
+
+            if (animal == null) continue;
+            removeAnimal(animal);
+
         }
     }
 
@@ -86,15 +95,16 @@ public class AnimalBehaviorController implements Runnable {
 
     private void reproduction() {
         for (var another_animal : animals) {
-            if (another_animal.getIsChild()) continue;
-            if (another_animal == animal) continue;
-            if (another_animal.getX() != animal.getX() || another_animal.getY() != animal.getY()) continue;
-            if (another_animal.getClass() != this.animal.getClass()) continue;
-            if (animal.getEatAnimalChance().containsKey(another_animal)) continue;
-            if (animal.getSatiety() != animal.getMaxSatiety()
-                    || another_animal.getSatiety() != another_animal.getMaxSatiety()) continue;
-            animal.setSatiety(0);
-            another_animal.setSatiety(0);
+//            if (another_animal.getIsChild()) continue;
+//            if (another_animal == animal) continue;
+//            if (another_animal.getX() != animal.getX() || another_animal.getY() != animal.getY()) continue;
+//            if (another_animal.getClass() != this.animal.getClass()) continue;
+//            if (animal.getEatAnimalChance().containsKey(another_animal)) continue;
+//            if (animal.getSatiety() != animal.getMaxSatiety()
+//                    || another_animal.getSatiety() != another_animal.getMaxSatiety()) continue;
+//            animal.setSatiety(0);
+//            another_animal.setSatiety(0);
+            if (animal.reproduction(another_animal) == null) continue;
             addAnimal(animal.copy());
             break;
         }

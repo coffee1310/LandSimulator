@@ -8,8 +8,16 @@ import javafx.scene.image.Image;
 import java.util.Map;
 
 public class Herbivore extends Animal {
-    public Herbivore(int xPos, int yPos, Image image, int maxMove,  float satiety, float maxSatiety) {
-        super(xPos, yPos, image, maxMove, satiety, maxSatiety);
+    public Herbivore(int xPos,
+                     int yPos,
+                     Image image,
+                     int maxMove,
+                     float satiety,
+                     float maxSatiety,
+                     Map<String, Integer> eatAnimalChances,
+                     String name,
+                     float weight) {
+        super(xPos, yPos, image, maxMove, satiety, maxSatiety, eatAnimalChances, name, weight);
     }
 
     public Herbivore(Herbivore other) {
@@ -18,8 +26,14 @@ public class Herbivore extends Animal {
 
     @Override
     public Animal eat(Animal animal) {
-        if (this.satiety + animal.weight <= this.maxWeightForFullSatiety) this.satiety += animal.weight;
+        if (this == animal) return null;
+        if (this.XPosition != animal.getX() || this.YPosition != animal.getY()) return null;
+        if (animal.getTitle().equals(this.name)) return null;
+        if (!this.eatAnimalChances.containsKey(animal.getTitle())) return null;
+
+        if (this.satiety + animal.getWeight() <= this.maxWeightForFullSatiety) this.satiety += animal.getWeight();
         else this.satiety = this.maxWeightForFullSatiety;
+
         return this;
     }
 
@@ -34,27 +48,36 @@ public class Herbivore extends Animal {
     public void move(int steps) {
         switch (this.direction) {
             case UP:
-                if (this.YPosition > 0) this.YPosition -= steps;
+                this.YPosition = Math.max(0, this.YPosition - steps);
                 break;
             case DOWN:
-                if (this.YPosition < Game.getInstance().getHeight()) this.YPosition += steps;
+                this.YPosition = Math.min(Game.getInstance().getHeight() - 1, this.YPosition + steps);
                 break;
             case LEFT:
-                if (this.XPosition > 0) this.XPosition -= steps;
+                this.XPosition = Math.max(0, this.XPosition - steps);
                 break;
             case RIGHT:
-                if (this.XPosition < Game.getInstance().getWidth()) this.XPosition += steps;
+                this.XPosition = Math.min(Game.getInstance().getWidth() - 1, this.XPosition + steps);
                 break;
         }
 
         this.stepBeforeToBeAdult++;
-        if (this.stepBeforeToBeAdult >= 10) this.isChild = true;
+        if (this.stepBeforeToBeAdult >= 10) this.isChild = false;
     }
 
     @Override
-    public Animal reproduction(Animal animal) {
-        if (!(animal instanceof Predator)) return null;
-        return new Herbivore(this.XPosition, this.YPosition, this.image, this.maxMove, this.satiety, this.maxWeightForFullSatiety);
+    public Animal reproduction(Animal another_animal) {
+        if (!another_animal.getTitle().equals(this.name)) return null;
+        if (another_animal.getIsChild()) return null;
+        if (another_animal == this) return null;
+        if (another_animal.getX() != this.getX() || another_animal.getY() != this.getY()) return null;
+        if (another_animal.getClass() != this.getClass()) return null;
+        if (this.getEatAnimalChance().containsKey(another_animal)) return null;
+        if (this.getSatiety() != this.getMaxSatiety()
+                || another_animal.getSatiety() != another_animal.getMaxSatiety()) return null;
+        this.setSatiety(0);
+        another_animal.setSatiety(0);
+        return another_animal;
     }
 
     @Override
@@ -81,7 +104,7 @@ public class Herbivore extends Animal {
     public void setDirection(Direction direction) {this.direction = direction;}
 
     @Override
-    public Map<Animal, Integer> getEatAnimalChance() {return this.eatAnimalChances;}
+    public Map<String, Integer> getEatAnimalChance() {return this.eatAnimalChances;}
 
     @Override
     public int getMaxMove() {return this.maxMove;}
@@ -130,5 +153,15 @@ public class Herbivore extends Animal {
     @Override
     public float getMaxSatiety() {
         return this.maxWeightForFullSatiety;
+    }
+
+    @Override
+    public String getTitle() {
+        return this.name;
+    }
+
+    @Override
+    public float getWeight() {
+        return this.weight;
     }
 }

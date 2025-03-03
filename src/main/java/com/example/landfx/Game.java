@@ -1,6 +1,7 @@
 package com.example.landfx;
 
 import com.example.landfx.Enteties.AbstractEnteties.Animal;
+import com.example.landfx.Enteties.Enteties.Rabbit;
 import com.example.landfx.Enteties.Enteties.Wolf;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -105,6 +106,16 @@ public class Game {
                 )
             )
         );
+        animal_types.add(
+                new Rabbit(
+                        -1,
+                        -1,
+                        new Image(
+                                new FileInputStream(HelloApplication.class.getResource("image/rabbit.png").getPath())
+                        )
+                )
+        );
+
 
         int animal_types_count;
         for (var animal_type : animal_types) {
@@ -115,7 +126,7 @@ public class Game {
             for (int i = 0; i < animal_types_count; i++) {
                 Animal newAnimal = animal.copy();
                 animal.setCoordinates(rand.nextInt(WIDTH), rand.nextInt(HEIGHT));
-                newAnimal.setCoordinates(rand.nextInt(WIDTH), rand.nextInt(HEIGHT) );
+                newAnimal.setCoordinates(rand.nextInt(WIDTH), rand.nextInt(HEIGHT));
                 animals.add(newAnimal);
             }
         }
