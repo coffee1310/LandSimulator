@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -47,10 +48,10 @@ public class AnimalBehaviorController implements Runnable {
 
     private synchronized void removeAnimal(Animal animal) {
         animals.remove(animal);
-        animalViews.remove(animal);
+        animalViews.get(animal);
     }
 
-    private void eat() {
+    private synchronized void eat() {
         for (var another_animal : animals) {
             if (another_animal == animal) continue;
             if (another_animal.getX() != animal.getX() || another_animal.getY() != animal.getY()) continue;
@@ -62,8 +63,7 @@ public class AnimalBehaviorController implements Runnable {
             animal = rand.nextInt(1, chance + 1) < chance + 1? animal.eat(another_animal) : animal;
 
             if (animal == null) continue;
-            removeAnimal(animal);
-
+            another_animal.setAlive(false);
         }
     }
 
@@ -111,7 +111,14 @@ public class AnimalBehaviorController implements Runnable {
     }
 
     @Override
-    public void run() {
+    public synchronized void run() {
+        if (!animal.isAlive()) {
+            removeAnimal(animal);
+            threads.remove(this);
+            Thread.interrupted();
+            return;
+        }
+
         eat();
         reproduction();
         move(animal);

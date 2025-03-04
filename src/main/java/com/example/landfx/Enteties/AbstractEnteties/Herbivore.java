@@ -141,6 +141,16 @@ public class Herbivore extends Animal {
     }
 
     @Override
+    public boolean isAlive() {
+        return this.isAlive;
+    }
+
+    @Override
+    public void setAlive(boolean alive) {
+        this.isAlive = alive;
+    }
+
+    @Override
     public float getSatiety() {
         return this.satiety;
     }

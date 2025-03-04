@@ -154,6 +154,10 @@ public class Game {
                         animalViews.keySet().retainAll(newAnimals);
 
                         for (var animal : newAnimals) {
+                            if (!animal.isAlive()) {
+                                animals.remove(animal);
+                                continue;
+                            }
                             ImageView imageView = animalViews.get(animal);
                             if (imageView == null) {
                                 imageView = new ImageView(animal.getImage());

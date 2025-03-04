@@ -170,4 +170,14 @@ public class Predator extends Animal {
     public float getWeight() {
         return this.weight;
     }
+
+    @Override
+    public synchronized boolean isAlive() {
+        return this.isAlive;
+    }
+
+    @Override
+    public synchronized void setAlive(boolean alive) {
+        this.isAlive = alive;
+    }
 }

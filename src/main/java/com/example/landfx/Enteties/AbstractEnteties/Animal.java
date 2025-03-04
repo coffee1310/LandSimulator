@@ -122,15 +122,10 @@ public abstract class Animal {
 
     @Override
     public String toString() {
-        return this.id+ " (" + this.getX() + ", " + this.getY() + ")";
+        return this.id + " (" + this.getX() + ", " + this.getY() + ")";
     }
 
+    public abstract boolean isAlive();
 
-    public boolean isAlive() {
-        return isAlive;
-    }
-
-    public void setAlive(boolean alive) {
-        isAlive = alive;
-    }
+    public abstract void setAlive(boolean alive);
 }
