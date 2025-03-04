@@ -39,7 +39,6 @@ public class Controller {
             System.out.println("[ОШИБКА!] Не найдены изображения!");
         }
 
-
         this.Grid.setGridLinesVisible(true);
     }
 }

@@ -47,8 +47,18 @@ public class AnimalBehaviorController implements Runnable {
     }
 
     private synchronized void removeAnimal(Animal animal) {
-        animals.remove(animal);
-        animalViews.get(animal);
+        synchronized (animals) {
+            animals.remove(animal);
+        }
+
+        synchronized (animalViews) {
+            ImageView imageView = animalViews.remove(animal); // Удаляем ImageView из карты
+            if (imageView != null) {
+                Platform.runLater(() -> {
+                    Grid.getChildren().remove(imageView); // Удаляем ImageView из GridPane
+                });
+            }
+        }
     }
 
     private synchronized void eat() {
@@ -114,8 +124,10 @@ public class AnimalBehaviorController implements Runnable {
     public synchronized void run() {
         if (!animal.isAlive()) {
             removeAnimal(animal);
-            threads.remove(this);
-            Thread.interrupted();
+            synchronized (threads) {
+                threads.remove(this); // Удаляем поток из списка
+                Thread.interrupted();
+            }
             return;
         }
 
