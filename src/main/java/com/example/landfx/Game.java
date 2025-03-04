@@ -38,7 +38,7 @@ public class Game {
 
     private Thread AnimalThread;
     private Thread GridThread;
-    private List<Thread> AnimalThreads = new LinkedList<>();
+    private LinkedHashMap<Animal, Thread> AnimalThreads = new LinkedHashMap<>();
 
     private List<Animal> animal_types;
     private Map<Animal, ImageView> animalViews = new HashMap<>();
@@ -134,7 +134,7 @@ public class Game {
         AnimalThread = new Thread(() -> {
             for (var animal: animals) {
                 Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid, this.animals, this.AnimalThreads, this.animalViews));
-                this.AnimalThreads.add(animalBehaviorThread);
+                this.AnimalThreads.put(animal, animalBehaviorThread);
             }
         });
 
@@ -181,9 +181,13 @@ public class Game {
         AnimalThread = new Thread(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    List<Thread> animalThreads = new ArrayList<>(AnimalThreads);
-                    for (var th : animalThreads) {
-                        th.run();
+                    Map<Animal, Thread> animalThreads = new LinkedHashMap<>(AnimalThreads);
+                    for (Map.Entry<Animal, Thread> th: animalThreads.entrySet()) {
+                        th.getValue().run();
+                        if (!th.getKey().isAlive()) {
+                            th.getValue().interrupt();
+                            AnimalThreads.remove(th.getKey());
+                        }
                     }
 
                     Thread.sleep(TACT_DURATION);

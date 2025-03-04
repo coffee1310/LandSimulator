@@ -6,10 +6,7 @@ import javafx.application.Platform;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.example.landfx.Game.TACT_DURATION;
@@ -18,13 +15,13 @@ public class AnimalBehaviorController implements Runnable {
     private Animal animal;
     private List<Animal> animals;
     private GridPane Grid;
-    private List<Thread> threads;
+    private LinkedHashMap<Animal, Thread> threads;
     private Map<Animal, ImageView> animalViews;
 
     private int x;
     private int y;
 
-    public AnimalBehaviorController(Animal animal, GridPane Grid, List<Animal> animals, List<Thread> threads, Map<Animal, ImageView> animalViews) {
+    public AnimalBehaviorController(Animal animal, GridPane Grid, List<Animal> animals, LinkedHashMap<Animal, Thread> threads, Map<Animal, ImageView> animalViews) {
         this.animal = animal;
         this.Grid = Grid;
         this.animals = animals;
@@ -36,7 +33,7 @@ public class AnimalBehaviorController implements Runnable {
         animal.setIsChild(true);
         animals.add(animal);
         Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid, this.animals, this.threads, this.animalViews));
-        this.threads.add(animalBehaviorThread);
+        this.threads.put(animal, animalBehaviorThread);
         animalBehaviorThread.start();
 
         Platform.runLater(() -> {
@@ -125,8 +122,7 @@ public class AnimalBehaviorController implements Runnable {
         if (!animal.isAlive()) {
             removeAnimal(animal);
             synchronized (threads) {
-                threads.remove(this); // Удаляем поток из списка
-                Thread.interrupted();
+                threads.remove(this);
             }
             return;
         }
