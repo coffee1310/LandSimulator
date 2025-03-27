@@ -19,6 +19,7 @@ public abstract class Animal {
         this.maxWeightForFullSatiety = other.maxWeightForFullSatiety;
         this.name = other.name;
         this.weight = other.weight;
+        this.isSwimming = other.isSwimming;
     }
 
     public Animal(int XPosition,
@@ -29,7 +30,8 @@ public abstract class Animal {
                   float maxSatiety,
                   Map<String, Integer> eatAnimalChances,
                   String name,
-                  float weight) {
+                  float weight,
+                  boolean isSwimming) {
         this.id = Animal.max_id++;
         this.XPosition = XPosition;
         this.YPosition = YPosition;
@@ -40,6 +42,7 @@ public abstract class Animal {
         this.eatAnimalChances = eatAnimalChances;
         this.name = name;
         this.weight = weight;
+        this.isSwimming = isSwimming;
     }
 
     protected static int max_id = 0;
@@ -115,6 +118,8 @@ public abstract class Animal {
     protected boolean isChild = true;
 
     protected boolean isAlive = true;
+
+    protected boolean isSwimming = false;
 
     protected int stepBeforeToBeAdult = 0;
 

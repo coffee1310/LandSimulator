@@ -1,7 +1,9 @@
 package com.example.landfx.Enteties.AbstractEnteties;
 
+import com.example.landfx.Enum.CellType;
 import com.example.landfx.Enum.Direction;
 import com.example.landfx.Game;
+import com.example.landfx.ProcedureGeneration;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 
@@ -16,8 +18,9 @@ public class Predator extends Animal {
                     int maxSatiety,
                     Map<String, Integer> eatAnimalChances,
                     String name,
-                    float weight) {
-        super(xPos, yPos, image, maxMove, satiety, maxSatiety, eatAnimalChances, name, weight);
+                    float weight,
+                    boolean isSwimming) {
+        super(xPos, yPos, image, maxMove, satiety, maxSatiety, eatAnimalChances, name, weight, isSwimming);
         this.eatPlants = false;
     }
 
@@ -43,23 +46,62 @@ public class Predator extends Animal {
 
     @Override
     public void move(int steps) {
+        int newX = this.XPosition;
+        int newY = this.YPosition;
+
         switch (this.direction) {
             case UP:
-                this.YPosition = Math.max(0, this.YPosition - steps);
+                newY = this.YPosition - steps;
                 break;
             case DOWN:
-                this.YPosition = Math.min(Game.getInstance().getHeight() - 1, this.YPosition + steps);
+                newY = this.YPosition + steps;
                 break;
             case LEFT:
-                this.XPosition = Math.max(0, this.XPosition - steps);
+                newX = this.XPosition - steps;
                 break;
             case RIGHT:
-                this.XPosition = Math.min(Game.getInstance().getWidth() - 1, this.XPosition + steps);
+                newX = this.XPosition + steps;
                 break;
         }
 
+        int deltaX = Integer.compare(newX, this.XPosition);
+        int deltaY = Integer.compare(newY, this.YPosition);
+
+        int currentX = this.XPosition;
+        int currentY = this.YPosition;
+
+        while (currentX != newX || currentY != newY) {
+            int nextX = currentX + deltaX;
+            int nextY = currentY + deltaY;
+
+            if (!canMoveTo(nextX, nextY)) {
+                break;
+            }
+
+            currentX = nextX;
+            currentY = nextY;
+        }
+
+        this.XPosition = currentX;
+        this.YPosition = currentY;
+
         this.stepBeforeToBeAdult++;
         if (this.stepBeforeToBeAdult >= 10) this.isChild = false;
+    }
+
+    private synchronized boolean canMoveTo(int x, int y) {
+        if (x < 0 || x >= Game.getInstance().getWidth() || y < 0 || y >= Game.getInstance().getHeight()) {
+            return false;
+        }
+
+        CellType cellType = ProcedureGeneration.getInstance().getCellType(x, y);
+        System.out.println("Cell type at (" + x + ", " + y + "): " + cellType);
+
+        if (cellType.equals(CellType.WATER) && !this.isSwimming) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

@@ -1,12 +1,16 @@
 package com.example.landfx;
 
 import com.example.landfx.Enteties.AbstractEnteties.Animal;
+import com.example.landfx.Enteties.AbstractEnteties.Herbivore;
+import com.example.landfx.Enteties.AbstractEnteties.Plant;
 import com.example.landfx.Enum.Direction;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static com.example.landfx.Game.TACT_DURATION;
@@ -17,22 +21,29 @@ public class AnimalBehaviorController implements Runnable {
     private GridPane Grid;
     private LinkedHashMap<Animal, Thread> threads;
     private Map<Animal, ImageView> animalViews;
+    private CopyOnWriteArrayList<Plant> plants;
 
     private int x;
     private int y;
 
-    public AnimalBehaviorController(Animal animal, GridPane Grid, List<Animal> animals, LinkedHashMap<Animal, Thread> threads, Map<Animal, ImageView> animalViews) {
+    public AnimalBehaviorController(Animal animal,
+                                    GridPane Grid,
+                                    List<Animal> animals,
+                                    LinkedHashMap<Animal, Thread> threads,
+                                    Map<Animal, ImageView> animalViews,
+                                    CopyOnWriteArrayList<Plant> plants) {
         this.animal = animal;
         this.Grid = Grid;
         this.animals = animals;
         this.threads = threads;
         this.animalViews = animalViews;
+        this.plants = plants;
     }
 
     private synchronized void addAnimal(Animal animal) {
         animal.setIsChild(true);
         animals.add(animal);
-        Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid, this.animals, this.threads, this.animalViews));
+        Thread animalBehaviorThread = new Thread(new AnimalBehaviorController(animal, this.Grid, this.animals, this.threads, this.animalViews, this.plants));
         this.threads.put(animal, animalBehaviorThread);
         animalBehaviorThread.start();
 
@@ -49,10 +60,10 @@ public class AnimalBehaviorController implements Runnable {
         }
 
         synchronized (animalViews) {
-            ImageView imageView = animalViews.remove(animal); // Удаляем ImageView из карты
+            ImageView imageView = animalViews.remove(animal);
             if (imageView != null) {
                 Platform.runLater(() -> {
-                    Grid.getChildren().remove(imageView); // Удаляем ImageView из GridPane
+                    Grid.getChildren().remove(imageView);
                 });
             }
         }
@@ -72,6 +83,41 @@ public class AnimalBehaviorController implements Runnable {
             if (animal == null) continue;
             another_animal.setAlive(false);
         }
+
+        if (animal.getClass() != Herbivore.class) return;
+
+        CopyOnWriteArrayList<Plant> plantsCopy = new CopyOnWriteArrayList<>(this.plants);
+        for (var plant : plantsCopy) {
+            if (plant.getX() != animal.getX() || plant.getY() != animal.getY()) continue;
+
+            this.animal.eat(plant);
+            plants.remove(plant);
+
+            Platform.runLater(() -> {
+                Node nodeToRemove = null;
+
+                for (Node node : Grid.getChildren()) {
+                    Integer colIndex = GridPane.getColumnIndex(node);
+                    Integer rowIndex = GridPane.getRowIndex(node);
+
+                    if (colIndex != null && rowIndex != null &&
+                            colIndex == plant.getX() && rowIndex == plant.getY() &&
+                            node instanceof ImageView) {
+
+                        ImageView imageView = (ImageView) node;
+                        if (imageView.getImage() == plant.getImage().getImage()) {
+                            nodeToRemove = node;
+                            break;
+                        }
+                    }
+                }
+
+                if (nodeToRemove != null) {
+                    Grid.getChildren().remove(nodeToRemove);
+                }
+            });
+        }
+
     }
 
     private void move(Animal animal) {
@@ -102,15 +148,6 @@ public class AnimalBehaviorController implements Runnable {
 
     private void reproduction() {
         for (var another_animal : animals) {
-//            if (another_animal.getIsChild()) continue;
-//            if (another_animal == animal) continue;
-//            if (another_animal.getX() != animal.getX() || another_animal.getY() != animal.getY()) continue;
-//            if (another_animal.getClass() != this.animal.getClass()) continue;
-//            if (animal.getEatAnimalChance().containsKey(another_animal)) continue;
-//            if (animal.getSatiety() != animal.getMaxSatiety()
-//                    || another_animal.getSatiety() != another_animal.getMaxSatiety()) continue;
-//            animal.setSatiety(0);
-//            another_animal.setSatiety(0);
             if (animal.reproduction(another_animal) == null) continue;
             addAnimal(animal.copy());
             break;

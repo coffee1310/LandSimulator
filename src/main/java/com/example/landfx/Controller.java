@@ -30,6 +30,37 @@ public class Controller {
         this.Grid = grid;
     }
 
+//    public void initialize() {
+//        ProcedureGeneration procedureGeneration = ProcedureGeneration.getInstance();
+//        try {
+//            procedureGeneration.setGrid(this.Grid);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        this.game = Game.getInstance();
+//        this.Grid = procedureGeneration.getGrid();
+//        try {
+//            this.game.setGrid(this.Grid);
+//        } catch (FileNotFoundException e) {
+//            System.out.println("[ОШИБКА!] Не найдены изображения!");
+//        }
+//
+//        this.Grid.setGridLinesVisible(true);
+//    }
+
+//    public void initialize() {
+//        ProcedureGeneration procedureGeneration = ProcedureGeneration.getInstance();
+//
+//        try {
+//            procedureGeneration.setGrid(this.Grid);
+//        } catch (FileNotFoundException e) {
+//            System.out.println("[ОШИБКА!] Не найдены изображения!");
+//        }
+//
+//        this.Grid.setGridLinesVisible(true);
+//    }
+
     public void initialize() {
         this.game = Game.getInstance();
 
@@ -38,6 +69,7 @@ public class Controller {
         } catch (FileNotFoundException e) {
             System.out.println("[ОШИБКА!] Не найдены изображения!");
         }
+
 
         this.Grid.setGridLinesVisible(true);
     }

@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Wolf extends Predator {
     public Wolf(int xPos, int yPos, Image image) {
-        super(xPos, yPos, image, 3, 8, 8, new HashMap<>(), "Wolf", 50);
+        super(xPos, yPos, image, 3, 8, 8, new HashMap<>(), "Wolf", 50, false);
         initializeEatAnimalsChance();
     }
 
