@@ -13,5 +13,6 @@ public class Sheep extends Herbivore {
 
     private void initializeEatAnimalsChance() {
         //this.eatAnimalChances.put("Rabbit", 60);
+
     }
 }

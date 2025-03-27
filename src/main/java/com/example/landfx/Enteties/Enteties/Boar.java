@@ -13,5 +13,7 @@ public class Boar extends Herbivore {
 
     private void initializeEatAnimalsChance() {
         //this.eatAnimalChances.put("Rabbit", 60);
+        this.eatAnimalChances.put("Mouse", 50);
+        this.eatAnimalChances.put("Caterpillar", 90);
     }
 }

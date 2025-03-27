@@ -13,5 +13,9 @@ public class Eagle extends Predator {
 
     private void initializeEatAnimalsChance() {
         //this.eatAnimalChances.put("Rabbit", 60);
+        this.eatAnimalChances.put("Fox", 10);
+        this.eatAnimalChances.put("Rabbit", 90);
+        this.eatAnimalChances.put("Mouse", 90);
+        this.eatAnimalChances.put("Duck", 80);
     }
 }

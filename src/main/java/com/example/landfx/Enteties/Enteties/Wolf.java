@@ -15,5 +15,10 @@ public class Wolf extends Predator {
 
     private void initializeEatAnimalsChance() {
         this.eatAnimalChances.put("Rabbit", 60);
+        this.eatAnimalChances.put("Horse", 10);
+        this.eatAnimalChances.put("Deer", 15);
+        this.eatAnimalChances.put("Mouse", 80);
+        this.eatAnimalChances.put("Goat", 60);
+        this.eatAnimalChances.put("Duck", 40);
     }
 }

@@ -13,5 +13,9 @@ public class Fox extends Predator {
 
     private void initializeEatAnimalsChance() {
         //this.eatAnimalChances.put("Rabbit", 60);
+        this.eatAnimalChances.put("Rabbit", 70);
+        this.eatAnimalChances.put("Mouse", 90);
+        this.eatAnimalChances.put("Duck", 60);
+        this.eatAnimalChances.put("Caterpillar", 40);
     }
 }

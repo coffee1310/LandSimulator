@@ -13,5 +13,9 @@ public class Boa extends Predator {
 
     private void initializeEatAnimalsChance() {
         //this.eatAnimalChances.put("Rabbit", 60);
+        this.eatAnimalChances.put("Fox", 15);
+        this.eatAnimalChances.put("Rabbit", 20);
+        this.eatAnimalChances.put("Mouse", 40);
+        this.eatAnimalChances.put("Duck", 10);
     }
 }
